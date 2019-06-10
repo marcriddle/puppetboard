@@ -53,7 +53,7 @@
       </table>
     </div>
     <div class='row'>
-      <h1>Reports</h1>
+      <h1>Reports <a title='Events' href="{{url_for('events_node', node=node.name)}}"><i class='medium darkblue text file icon'></i></a></h1>
       {% if config.DAILY_REPORTS_CHART_ENABLED %}
         <div id="dailyReportsChartContainer" class="one column row">
         <div id="dailyReportsChart" data-certname="{{node.name}}"></div>

@@ -1,0 +1,74 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2>{{node.name}}</h2>
+<h4><label rel="utctimestamp">{{fromDate}}</label> to <label rel="utctimestamp">{{toDate}}</label></h4>
+<h4>Last {{event_count}} event{% if event_count > 1 %}s{% endif %}:</h4>
+
+<table class='ui basic table compact'>
+<tbody>
+  {% for key in reports %}
+  <tr class="blue ui message">
+    <td><i class="triangle right icon"></i> Report: <a href="{{url_for('report', node=node.name, report_id=key)}}">{{key}}</a></td>
+  </tr>
+  
+  <tr>
+    <td>
+      <table class='ui basic table compact'>
+        <thead>
+          <tr>
+            <th>Date/Time</th>
+            <th>Resource</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+
+        {% for event in reports[key] %}
+        {% if not event.failed and event.item['old'] != event.item['new'] %}
+          <tr id='event-{{key}}-{{loop.index}}' class='positive event'>
+        {% elif event.failed %}
+          <tr id='event-{{key}}-{{loop.index}}' class='error event'>
+        {% else %}
+          <tr>
+        {% endif %}
+          <td rel="utctimestamp">{{event.timestamp}}</td>
+          <td>{{event.item['type']}}[{{event.item['title']}}]</td>
+          <td>{{event.status}}</td>
+        </tr>
+        {% if event.status != "skipped" %}
+        {% if not event.failed and event.item['old'] != event.item['new'] %}
+          <tr class='positive'>
+        {% elif event.failed %}
+          <tr class='error'>
+        {% endif %}
+
+          <td class='message' colspan='5'>
+            <div id='message-event-{{key}}-{{loop.index}}' style='display:none;'>
+              Changed From: {{event.item['old']}}<br />
+              Changed To: {{event.item['new']}}<br /><br />
+              {{event.item['message']}}
+            </div>
+          </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+
+        </tbody>
+      </table>
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
+</table>
+
+{% endblock content %}
+{% block script %}
+  <script type='text/javascript'>
+    jQuery(function ($) {
+      $(".event").click(function(e) {
+        $("#message-" + this.id).slideToggle(200);
+        return false;
+      });
+    });
+  </script>
+{% endblock script %}

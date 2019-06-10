@@ -36,6 +36,7 @@
       <td>
         {% if node.report_timestamp %}
         <a title='Reports' href="{{url_for('reports', env=current_env, node_name=node.name)}}"><i class='large darkblue book icon'></i></a>
+        <a title='Events' href="{{url_for('events_node', node=node.name)}}"><i class='large darkblue text file icon'></i></a>
         {% endif %}
       </td>
     </tr>
